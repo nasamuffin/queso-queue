@@ -1,6 +1,6 @@
-class Queue {
+class QuesoQueue {
   public:
-    Queue(Twitch twitch);
+    QuesoQueue(Twitch twitch);
 
     /**
      * Adds a level to queue; limit one per viewer.
