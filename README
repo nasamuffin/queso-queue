@@ -39,3 +39,6 @@ Commands:
 
  !pause/!resume
     pause or resume the level timer.
+
+ !restore
+    restore queue from disk (admin only >:C )
