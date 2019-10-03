@@ -1,0 +1,41 @@
+Queso Queue: a Mario Maker level queue manager
+
+Manage your viewer level queue for Super Mario Maker 2. Queso Queue sorts
+the queue into levels with online submitters and levels with offline submitters
+so that streamers can prioritize levels for viewers who are around to watch!
+
+The level queue is resolved into a priority queue every time it's queried.
+
+Commands:
+
+ !help
+    print the usage, and an overview of the priority queue system
+
+ !open
+    open the queue for submissions :)
+
+ !close
+    close the queue for submissions :(
+
+ !add ABC-DEF-GHI
+    add a level to the queue! limit one per viewer, unless you are admin :)
+
+ !remove [ABC-DEF-GHI]
+    remove your level from the queue, or a specific level if you are admin :)
+
+ !next
+    discard the current level and move on to the next one. also, perform
+    start-of-level actions (start the timer)
+
+ !current
+    display the current level in chat
+
+ !list
+    print the queue
+
+ !position
+    estimate the position of the viewer's level in queue, plus a pointer to
+    info on the priority queue system
+
+ !pause/!resume
+    pause or resume the level timer.
