@@ -1,3 +1,7 @@
+#include "level.h"
+
+#include <deque>
+
 class QuesoQueue {
   public:
     QuesoQueue(Twitch twitch);
@@ -22,6 +26,7 @@ class QuesoQueue {
     void LoadLastState();
 
   private:
-    std::queue<Level> _levels;
+    bool isOnline(Level l);
+    std::deque<Level> _levels;
     Twitch _twitch;  // query online state
 }
