@@ -18,6 +18,16 @@ class QuesoQueue {
     void Remove(std::string username, std::string levelCode = "");
 
     /**
+     * Pop the top of the queue and return the new top (subject to priority queue split)
+     */
+    Level Next();
+
+    /**
+     * Report the level currently being played (not subject to priority queue split)
+     */
+    Level Current();
+
+    /**
      * Split the stored level queue into online and offline for printing
      */
     std::tuple<std::queue<Level>, std::queue<Level>> List();

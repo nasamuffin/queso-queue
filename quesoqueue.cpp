@@ -47,6 +47,16 @@ void QuesoQueue::Remove(std::string username, std::string levelCode = "") {
     }
 }
 
+Level QuesoQueue::Next() {
+    _levels.pop_front();
+    auto pq = this.List();
+    return pq.get<0>.at(0);
+}
+    
+Level QuesoQueue::Current() {
+    return _levels.at(0);
+}
+
 bool QuesoQueue::isOnline(Level l) {
     return _twitch.isOnline(l.submitter);
 }
