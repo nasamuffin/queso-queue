@@ -2,12 +2,12 @@
 
 class Timer {
   public:
-    void StartTimer();
-    void PauseTimer();
-    void ResetTimer();
+    void Start();
+    void Pause();
+    void Reset();
 
   private:
     // std::string _outOfTimeMessage;
     // Chat _chat;
-    std::function<...> _callback;
-}
+    //std::function<...> _callback;
+};

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 class Twitch {
   public:
     bool isOnline(std::string username);
@@ -7,4 +9,4 @@ class Twitch {
 
   private:
     // IDK twitch API keys??????
-}
+};
