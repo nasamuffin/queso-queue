@@ -1,3 +1,5 @@
+#pragma once
+
 // Maybe redundant to Twitch API.
 #include <string>
 #include <stringstream>

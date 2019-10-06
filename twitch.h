@@ -1,3 +1,5 @@
+#pragma once
+
 class Twitch {
   public:
     bool isOnline(std::string username);
