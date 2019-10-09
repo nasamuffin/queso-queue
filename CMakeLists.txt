@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.12)
+cmake_minimum_required (VERSION 3.10)
 
 project(queso CXX)
 
@@ -10,7 +10,9 @@ endif(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 ### Require out-of-source builds
 file(TO_CMAKE_PATH "${PROJECT_BINARY_DIR}/CMakeLists.txt" LOC_PATH)
 if(EXISTS "${LOC_PATH}")
-    message(FATAL_ERROR "You cannot build in a source directory (or any directory with a CMakeLists.txt file). Please make a build subdirectory. Feel free to remove CMakeCache.txt and CMakeFiles.")
+    message(FATAL_ERROR "You cannot build in a source directory \
+    (or any directory with a CMakeLists.txt file). Please make a build subdirectory.\
+    Feel free to remove CMakeCache.txt and CMakeFiles.")
 endif()
 
 ### Configure build type if not specified
@@ -31,4 +33,4 @@ add_executable(
     ${SOURCES}
 )
 
-target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_11)
+target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
