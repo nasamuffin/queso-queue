@@ -4,6 +4,7 @@
 #include "level.h"
 #include "quesoqueue.h"
 #include "timer.h"
+#include "../keys.h"
 
 #include <string>
 #include <sstream>
@@ -22,4 +23,9 @@ class Chat {
     Timer _timer;
     std::string _helpText;
     std::string _priorityText;
+
+    std::string _server = "irc://irc.chat.twitch.tv"
+    std::string _port = 6667;
+    std::string _pass = Auth::ircPass;
+    std::string _nick = "NICK QuesoQueue";
 };
