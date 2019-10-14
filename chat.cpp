@@ -1,7 +1,53 @@
 #include "chat.h"
 
+#include "../keys.h"
+
+#include <cstring>
+#include <iostream>
+#include <sstream>
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <netdb.h>
+
 Chat::Chat(const QuesoQueue &qq, const Timer &timer) : _qq(qq), _timer(timer) {
-    // ...
+}
+
+void Chat::Connect() {
+    hostent *host = gethostbyname(_server.c_str());
+    sockaddr_in addr;
+    std::memcpy(&addr.sin_addr, host->h_addr, host->h_length);
+    addr.sin_family = AF_INET;
+    addr.sin_port = htons(_port);
+    _sockHandle = socket(AF_INET, SOCK_STREAM, 0);
+
+    connect (_sockHandle, reinterpret_cast<sockaddr*>(&addr), sizeof(addr));
+
+    // Auth
+    Write(std::string("PASS ") + Auth::ircPass + '\n');
+    Write(std::string("NICK ") + _nick + '\n');
+
+    // Join the channel
+    Write(std::string("JOIN #") + Auth::channel + '\n');
+
+    // Block til I'm authenticated.
+}
+
+void Chat::Listen() {
+    char sockbuff[4096];
+    for (;;) {
+        std::memset (&sockbuff, '\0', sizeof(sockbuff));
+        recv(_sockHandle, sockbuff, 4096, 0);
+        std::cout << sockbuff;
+    }
+}
+
+void Chat::Write(std::string command) {
+    send(_sockHandle, command.c_str(), command.size(), 0);
+}
+
+void Chat::WriteMessage(std::string message) {
+    std::stringstream ss;
+    Write(std::string("PRIVMSG #") + Auth::channel + std::string(" :") + message + '\n');
 }
 
 void Chat::HandleMessage(std::stringstream message, std::string sender) {

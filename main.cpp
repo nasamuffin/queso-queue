@@ -8,4 +8,7 @@ int main(int argc, char *argv[]) {
     QuesoQueue qq(t);
     Timer ti;
     Chat c(qq, ti);
+    c.Connect();
+    c.WriteMessage("Hello?");
+    c.Listen();
 }
