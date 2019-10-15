@@ -4,6 +4,7 @@
 
 #include <cstring>
 #include <iostream>
+#include <regex>
 #include <sstream>
 #include <sys/socket.h>
 #include <sys/types.h>
@@ -34,10 +35,35 @@ void Chat::Connect() {
 
 void Chat::Listen() {
     char sockbuff[4096];
+
+    // :derflergen!derflergen@derflergen.tmi.twitch.tv PRIVMSG #nasamuffin :!Bot do thing
+    std::regex userMessage(
+        "^" // beginning of string
+        ":" // all the IRC stuff gets prepended with a literal :
+        "([a-zA-Z0-9]+)" // username (IRC handle)
+        "!" // followed by IRC host(???)
+        ".* PRIVMSG #" // dont care >:C
+        "[a-zA-Z0-9]+" // channel name
+        " :" // IRC message body prepended by literal :
+        "(.*)" // message body - capture this!
+        "\n", // all the IRC stuff ends in a newline
+        std::regex_constants::egrep
+    );
     for (;;) {
         std::memset (&sockbuff, '\0', sizeof(sockbuff));
         recv(_sockHandle, sockbuff, 4096, 0);
-        std::cout << sockbuff;
+        
+        std::cmatch m;
+        if (std::regex_match(sockbuff, m, userMessage,
+                std::regex_constants::match_not_eol))
+        {
+            // Get username
+            std::string username = m[1];
+            // Get message body
+            std::string messageBody = m[2];
+
+            HandleMessage(std::stringstream(messageBody), username);
+        }
     }
 }
 
