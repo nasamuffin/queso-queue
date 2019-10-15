@@ -6,6 +6,8 @@
 #include <deque>
 #include <string>
 
+typedef std::tuple<std::deque<Level>,std::deque<Level>> PriorityQueso;
+
 class QuesoQueue {
   public:
     QuesoQueue(const Twitch &twitch);
@@ -34,7 +36,7 @@ class QuesoQueue {
     /**
      * Split the stored level queue into online and offline for printing
      */
-    std::tuple<std::deque<Level>, std::deque<Level>> List();
+    PriorityQueso List();
 
     void SaveState();
     void LoadLastState();

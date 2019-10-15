@@ -1,6 +1,7 @@
 #include "quesoqueue.h"
 
 #include <algorithm>
+#include <iostream>
 #include <tuple>
 
 QuesoQueue::QuesoQueue(const Twitch &twitch) : _twitch(twitch) {
@@ -16,11 +17,15 @@ void QuesoQueue::Add(Level level) {
                                });
     if (result == _levels.end()) {
         // TODO: exception? error? explain why it broekn?
-        return;
+        std::cout << "Couldn't find something with the matching submitter" << std::endl;
+        // push to the end of the queue
+        _levels.push_back(level);
     }
-
-    // push to the end of the queue
-    _levels.push_back(level);
+    else {
+        std::cout << level.submitter << " already has a level!" << std::endl;
+    }
+    std::cout << "now the queue has " << _levels.size() << " entries." 
+        << std::endl;
 
     // Report the placement in queue?
     // TODO: return List()
@@ -65,13 +70,15 @@ bool QuesoQueue::isOnline(Level l) {
     return _twitch.isOnline(l.submitter);
 }
 
-std::tuple<std::deque<Level>, std::deque<Level>> QuesoQueue::List() {
+PriorityQueso QuesoQueue::List() {
     std::deque<Level> online, offline;
-    std::partition_copy(_levels.begin(), _levels.end(), online.begin(),
-                        offline.begin(),
-                        [this](Level l){
-                            return this->_twitch.isOnline(l.submitter);
-                        });
+    for (Level l : _levels) {
+        if (_twitch.isOnline(l.submitter)) {
+            online.push_back(l);
+        } else {
+            offline.push_back(l);
+        }
+    }
     return std::make_tuple(online, offline);
 }
 

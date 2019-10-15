@@ -76,6 +76,20 @@ void Chat::WriteMessage(std::string message) {
     Write(std::string("PRIVMSG #") + Auth::channel + std::string(" :") + message + '\n');
 }
 
+std::string Chat::LevelListMessage(PriorityQueso list) {
+    std::stringstream ss;
+    auto online = std::get<0>(list);
+    auto offline = std::get<1>(list);
+
+    for(Level l : online)
+        ss << l.submitter << " (online), ";
+    for(Level l : offline)
+        ss << l.submitter << " (offline), ";
+
+    // TODO clean up trailing ", "
+    return ss.str();
+}
+
 void Chat::HandleMessage(std::stringstream message, std::string sender) {
     std::string command;
     // take just the first word (bot word goes in the front)
@@ -106,7 +120,7 @@ void Chat::HandleMessage(std::stringstream message, std::string sender) {
     } else if (command == "current") {
         //WriteMessage(CurrentLevelMessage(_qq.Current()));
     } else if (command == "list") {
-        //WriteMessage(LevelListMessage(_qq.List()));
+        WriteMessage(LevelListMessage(_qq.List()));
     } else if (command == "position") {
         //WriteMessage(PositionMessage(_qq.Position(sender)));
     } else if (command == "resume") {
