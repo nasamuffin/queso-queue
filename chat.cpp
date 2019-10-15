@@ -82,11 +82,11 @@ void Chat::HandleMessage(std::stringstream message, std::string sender) {
     message >> command;
 
     // check the command word
-    if (command == "!open") {
+    if (command == "open") {
         _canAddToQueue = true;
-    } else if (command =="!close") {
+    } else if (command == "close") {
         _canAddToQueue = false;
-    } else if (command =="!add ABC-DEF-GHI") {
+    } else if (command == "add") {
         if (_canAddToQueue) {
             std::string levelCode;
             message >> levelCode;
@@ -95,25 +95,25 @@ void Chat::HandleMessage(std::stringstream message, std::string sender) {
             l.submitter = sender;
             _qq.Add(l);
         }
-    } else if (command =="!remove [ABC-DEF-GHI]") {
+    } else if (command == "remove") {
         // TODO - this might be optional
         std::string levelCode;
         message >> levelCode;
         _qq.Remove(sender, levelCode);
-    } else if (command =="!next") {
+    } else if (command == "next") {
         _timer.Reset();
         //WriteMessage(NextLevelMessage(_qq.Next()));
-    } else if (command =="!current") {
+    } else if (command == "current") {
         //WriteMessage(CurrentLevelMessage(_qq.Current()));
-    } else if (command =="!list") {
+    } else if (command == "list") {
         //WriteMessage(LevelListMessage(_qq.List()));
-    } else if (command =="!position") {
+    } else if (command == "position") {
         //WriteMessage(PositionMessage(_qq.Position(sender)));
-    } else if (command =="!resume") {
+    } else if (command == "resume") {
         _timer.Start();
-    } else if (command =="!pause") {
+    } else if (command == "pause") {
         _timer.Pause();
-    } else if (command =="!restore") {
+    } else if (command == "restore") {
         _qq.LoadLastState();
     // if it's not a command, print the usage
     } else {    // "!help"
