@@ -45,7 +45,7 @@ void Chat::Listen() {
         ".* PRIVMSG #" // dont care >:C
         "[a-zA-Z0-9]+" // channel name
         " :" // IRC message body prepended by literal :
-        "(.*)" // message body - capture this!
+        "!(.*)" // message body - capture this!
         "\n", // all the IRC stuff ends in a newline
         std::regex_constants::egrep
     );
@@ -80,11 +80,6 @@ void Chat::HandleMessage(std::stringstream message, std::string sender) {
     std::string command;
     // take just the first word (bot word goes in the front)
     message >> command;
-
-    // does it look like a bot command?
-    if (command[0] != '!') {
-        return;
-    }
 
     // check the command word
     if (command == "!open") {
