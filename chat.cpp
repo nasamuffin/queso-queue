@@ -131,6 +131,7 @@ void Chat::HandleMessage(std::stringstream message, std::string sender) {
         _qq.LoadLastState();
     // if it's not a command, print the usage
     } else {    // "!help"
-        //WriteMessage(_helpText);
+        std::cout << "I'm gonna try to !help !" << std:: endl;
+        WriteMessage(_help);
     }
 }

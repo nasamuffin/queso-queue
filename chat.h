@@ -24,7 +24,6 @@ class Chat {
     bool _canAddToQueue;
     QuesoQueue _qq;
     Timer _timer;
-    std::string _helpText;
     std::string _priorityText;
 
     std::string _server = "irc.chat.twitch.tv";
@@ -32,4 +31,7 @@ class Chat {
     std::string _nick = "quesoqueue";
 
     int _sockHandle;
+
+    std::string _help =
+        "Try these: !add ABC-DEF-GHI | !remove | !current | !list | !position";
 };
