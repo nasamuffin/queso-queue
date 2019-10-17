@@ -4,7 +4,7 @@
 
 class Twitch {
   public:
-    bool isOnline(std::string username);
+    bool isOnline(std::string username, std::string channel);
     void placeStreamMarker();
 
   private:

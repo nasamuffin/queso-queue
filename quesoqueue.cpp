@@ -66,14 +66,15 @@ Level QuesoQueue::Current() {
     return _levels.at(0);
 }
 
-bool QuesoQueue::isOnline(Level l) {
-    return _twitch.isOnline(l.submitter);
-}
-
 PriorityQueso QuesoQueue::List() {
     std::deque<Level> online, offline;
+    bool isFirst = true;
     for (Level l : _levels) {
-        if (_twitch.isOnline(l.submitter)) {
+        // The first person in queue is special.
+        if (isFirst) {
+            online.push_back(l);
+            isFirst = false;
+        } else if (_twitch.isOnline(l.submitter, Auth::channel)) {
             online.push_back(l);
         } else {
             offline.push_back(l);

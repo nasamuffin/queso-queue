@@ -20,6 +20,10 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Debug)
 endif()
 
+### Check for cURL
+set(CURL_LIBRARY "-lcurl")
+find_package(CURL REQUIRED)
+
 set(SOURCES
     main.cpp
     timer.cpp
@@ -33,4 +37,7 @@ add_executable(
     ${SOURCES}
 )
 
+include_directories(${CURL_INCLUDE_DIR})
+
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
+target_link_libraries(${PROJECT_NAME} ${CURL_LIBRARIES})
