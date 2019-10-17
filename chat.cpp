@@ -52,6 +52,12 @@ void Chat::Listen() {
     for (;;) {
         std::memset (&sockbuff, '\0', sizeof(sockbuff));
         recv(_sockHandle, sockbuff, 4096, 0);
+
+        // Respond to ping (otherwise Twitch kills the connection)
+        if (std::strncmp(sockbuff, "PING", 4) == 0) {
+            Write("PONG :tmi.twitch.tv\n");
+            continue;
+        }
         
         std::cmatch m;
         if (std::regex_match(sockbuff, m, userMessage,
