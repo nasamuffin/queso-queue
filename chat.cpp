@@ -69,6 +69,7 @@ void Chat::Listen() {
             std::string messageBody = m[2];
 
             HandleMessage(std::stringstream(messageBody), username);
+            continue;
         }
     }
 }
