@@ -19,6 +19,8 @@ class Chat {
 
   private:
     std::string NextLevelMessage(Level l);
+    std::string CurrentLevelMessage(Level l);
+    std::string PositionMessage(Level l);
     std::string LevelListMessage(PriorityQueso list);
 
     bool _canAddToQueue;

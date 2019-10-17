@@ -93,6 +93,23 @@ std::string Chat::LevelListMessage(PriorityQueso list) {
         ss << l.submitter << " (offline), ";
 
     // TODO clean up trailing ", "
+    if (ss.str().empty()) {
+        ss << "There are no levels in the queue :C";
+    }
+    return ss.str();
+}
+
+std::string Chat::NextLevelMessage(Level l) {
+    std::stringstream ss;
+    ss << "Next up in queue is " << l.levelCode << ", submitted by "
+       << l.submitter;
+    return ss.str();
+}
+
+std::string Chat::CurrentLevelMessage(Level l) {
+    std::stringstream ss;
+    ss << "Currently playing " << l.levelCode << ", submitted by "
+       << l.submitter;
     return ss.str();
 }
 
@@ -113,18 +130,18 @@ void Chat::HandleMessage(std::stringstream message, std::string sender) {
             Level l;
             l.levelCode = levelCode;
             l.submitter = sender;
-            _qq.Add(l);
+            WriteMessage(_qq.Add(l));
         }
     } else if (command == "remove") {
         // TODO - this might be optional
         std::string levelCode;
         message >> levelCode;
-        _qq.Remove(sender, levelCode);
+        WriteMessage(_qq.Remove(sender, levelCode));
     } else if (command == "next") {
         _timer.Reset();
-        //WriteMessage(NextLevelMessage(_qq.Next()));
+        WriteMessage(NextLevelMessage(_qq.Next()));
     } else if (command == "current") {
-        //WriteMessage(CurrentLevelMessage(_qq.Current()));
+        WriteMessage(CurrentLevelMessage(_qq.Current()));
     } else if (command == "list") {
         WriteMessage(LevelListMessage(_qq.List()));
     } else if (command == "position") {
@@ -136,8 +153,5 @@ void Chat::HandleMessage(std::stringstream message, std::string sender) {
     } else if (command == "restore") {
         _qq.LoadLastState();
     // if it's not a command, print the usage
-    } else {    // "!help"
-        std::cout << "I'm gonna try to !help !" << std:: endl;
-        WriteMessage(_help);
     }
 }
