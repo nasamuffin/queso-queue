@@ -33,6 +33,7 @@ std::string QuesoQueue::Add(Level level) {
         ss << std::get<0>(List()).size() - 1;
         ss << " viewers who are online right now (there are ";
         ss << _levels.size() << " total levels in queue, including yours).";
+        SaveState();
         return ss.str();
     }
     else {
@@ -62,6 +63,7 @@ std::string QuesoQueue::Remove(std::string username, std::string levelCode) {
     // delet
     if (toRemove != _levels.end()) {
       _levels.erase(toRemove);
+        SaveState();
     }
     return std::string("PLACEHOLDER");
 }
@@ -69,6 +71,8 @@ std::string QuesoQueue::Remove(std::string username, std::string levelCode) {
 Level QuesoQueue::Next() {
     _levels.pop_front();
     auto pq = this->List();
+    SaveState();
+
     return std::get<0>(pq).front();
 }
     
@@ -94,9 +98,22 @@ PriorityQueso QuesoQueue::List() {
 }
 
 void QuesoQueue::SaveState() {
-    //...
+    std::ofstream savefile("queso.save", std::ios_base::out | std::ios_base::trunc);
+    for (Level l : _levels) {
+        savefile << l.submitter << " " << l.levelCode << std::endl;
+    }
 }
 
 void QuesoQueue::LoadLastState() {
-    //...
+    std::ifstream savefile("queso.save");
+    _levels.clear();
+    while(savefile) {
+        Level l;
+        savefile >> l.submitter;
+        savefile >> l.levelCode;
+        if (l.submitter.empty() || l.levelCode.empty()) {
+            continue;
+        }
+        _levels.push_back(l);
+    }   
 }
