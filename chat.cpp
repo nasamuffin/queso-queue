@@ -119,9 +119,9 @@ void Chat::HandleMessage(std::stringstream message, std::string sender) {
     message >> command;
 
     // check the command word
-    if (command == "open") {
+    if (command == "open" && sender == Auth::channel) {
         _canAddToQueue = true;
-    } else if (command == "close") {
+    } else if (command == "close" && sender == Auth::channel) {
         _canAddToQueue = false;
     } else if (command == "add") {
         if (_canAddToQueue) {
@@ -137,7 +137,7 @@ void Chat::HandleMessage(std::stringstream message, std::string sender) {
         std::string levelCode;
         message >> levelCode;
         WriteMessage(_qq.Remove(sender, levelCode));
-    } else if (command == "next") {
+    } else if (command == "next" && sender == Auth::channel) {
         _timer.Reset();
         WriteMessage(NextLevelMessage(_qq.Next()));
     } else if (command == "current") {
@@ -146,11 +146,11 @@ void Chat::HandleMessage(std::stringstream message, std::string sender) {
         WriteMessage(LevelListMessage(_qq.List()));
     } else if (command == "position") {
         //WriteMessage(PositionMessage(_qq.Position(sender)));
-    } else if (command == "resume") {
+    } else if (command == "resume" && sender == Auth::channel) {
         _timer.Start();
-    } else if (command == "pause") {
+    } else if (command == "pause" && sender == Auth::channel) {
         _timer.Pause();
-    } else if (command == "restore") {
+    } else if (command == "restore" && sender == Auth::channel) {
         _qq.LoadLastState();
     // if it's not a command, print the usage
     }
