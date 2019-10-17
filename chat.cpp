@@ -1,5 +1,4 @@
 #include "chat.h"
-
 #include "../keys.h"
 
 #include <cstring>
@@ -155,6 +154,5 @@ void Chat::HandleMessage(std::stringstream message, std::string sender) {
         _timer.Pause();
     } else if (command == "restore" && sender == Auth::channel) {
         _qq.LoadLastState();
-    // if it's not a command, print the usage
     }
 }
