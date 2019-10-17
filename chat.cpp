@@ -40,10 +40,10 @@ void Chat::Listen() {
     std::regex userMessage(
         "^" // beginning of string
         ":" // all the IRC stuff gets prepended with a literal :
-        "([a-zA-Z0-9]+)" // username (IRC handle)
+        "([a-zA-Z0-9_]+)" // username (IRC handle)
         "!" // followed by IRC host(???)
         ".* PRIVMSG #" // dont care >:C
-        "[a-zA-Z0-9]+" // channel name
+        "[a-zA-Z0-9_]+" // channel name
         " :" // IRC message body prepended by literal :
         "!(.*)" // message body - capture this!
         "\n", // all the IRC stuff ends in a newline
