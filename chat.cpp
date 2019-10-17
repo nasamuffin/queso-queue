@@ -3,6 +3,7 @@
 
 #include <cstring>
 #include <iostream>
+#include <poll.h>
 #include <regex>
 #include <sstream>
 #include <sys/socket.h>
@@ -49,6 +50,22 @@ void Chat::Listen() {
         std::regex_constants::egrep
     );
     for (;;) {
+
+        struct pollfd fd;
+        fd.fd = _sockHandle;
+        fd.events = POLLIN;
+        int ret = poll(&fd, 1, 1000);
+
+        if (_timer.CheckTimer()) {
+            WriteMessage("The timer has expired for this level! Yikes! Let's "
+                         "roll for retries.");
+            WriteMessage("!roll d10");
+        }
+
+        if (ret == 0) {
+            continue;
+        }
+
         std::memset (&sockbuff, '\0', sizeof(sockbuff));
         recv(_sockHandle, sockbuff, 4096, 0);
 
@@ -141,6 +158,7 @@ void Chat::HandleMessage(std::stringstream message, std::string sender) {
         WriteMessage(_qq.Remove(sender, levelCode));
     } else if (command == "next" && sender == Auth::channel) {
         _timer.Reset();
+        _timer.Start();
         WriteMessage(NextLevelMessage(_qq.Next()));
     } else if (command == "current") {
         WriteMessage(CurrentLevelMessage(_qq.Current()));
