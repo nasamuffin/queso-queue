@@ -5,6 +5,7 @@
 
 #include <deque>
 #include <string>
+#include <vector>
 
 typedef std::tuple<std::deque<Level>,std::deque<Level>> PriorityQueso;
 
@@ -15,13 +16,13 @@ class QuesoQueue {
     /**
      * Adds a level to queue; limit one per viewer.
      */
-    void Add(Level level);
+    std::string Add(Level level);
 
     /**
      * Removes the level submitted by the user. Or, if the user is admin,
      * remove the level with the specified code.
      */
-    void Remove(std::string username, std::string levelCode = "");
+    std::string Remove(std::string username, std::string levelCode = "");
 
     /**
      * Pop the top of the queue and return the new top (subject to priority queue split)
@@ -46,4 +47,5 @@ class QuesoQueue {
     std::deque<Level> _levels;
     Twitch _twitch;  // query online state
     std::string _modPlsDelete; // TODO moderator name
+    const size_t maxSize = 15;
 };

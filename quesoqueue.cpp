@@ -1,37 +1,46 @@
 #include "quesoqueue.h"
 
+#include "../keys.h"
+
 #include <algorithm>
 #include <iostream>
+#include <fstream>
+#include <sstream>
 #include <tuple>
 
 QuesoQueue::QuesoQueue(const Twitch &twitch) : _twitch(twitch) {
     // ...
 }
 
-void QuesoQueue::Add(Level level) {
-    // Check if the viewer already submitted something
+std::string QuesoQueue::Add(Level level) {
+    if (_levels.size() >= maxSize) {
+        return std::string("Sorry, the level queue is full!");
+    }
+
+    // Does the viewer already have a level in queue?
     auto result = std::find_if(std::begin(_levels),
                                std::end(_levels),
                                [level] (Level l) {
                                    return l.submitter==level.submitter;
                                });
-    if (result == _levels.end()) {
-        // TODO: exception? error? explain why it broekn?
-        std::cout << "Couldn't find something with the matching submitter" << std::endl;
+    // Or, if the submitter is the channel name, then THEY OWN US.
+    if (result == _levels.end() || level.submitter == Auth::channel) {
         // push to the end of the queue
         _levels.push_back(level);
+        std::stringstream ss;
+        // Since they JUST added it, we can pretty safely assume they're online.
+        ss << "Your level has been added to the queue behind ";
+        ss << std::get<0>(List()).size() - 1;
+        ss << " viewers who are online right now (there are ";
+        ss << _levels.size() << " total levels in queue, including yours).";
+        return ss.str();
     }
     else {
-        std::cout << level.submitter << " already has a level!" << std::endl;
+        return std::string("Sorry, viewers are limited to one submission at a time.");
     }
-    std::cout << "now the queue has " << _levels.size() << " entries." 
-        << std::endl;
-
-    // Report the placement in queue?
-    // TODO: return List()
 }
 
-void QuesoQueue::Remove(std::string username, std::string levelCode) {
+std::string QuesoQueue::Remove(std::string username, std::string levelCode) {
     auto toRemove = _levels.end();
     // Check if admin
     if (username == _modPlsDelete) {
@@ -54,6 +63,7 @@ void QuesoQueue::Remove(std::string username, std::string levelCode) {
     if (toRemove != _levels.end()) {
       _levels.erase(toRemove);
     }
+    return std::string("PLACEHOLDER");
 }
 
 Level QuesoQueue::Next() {
