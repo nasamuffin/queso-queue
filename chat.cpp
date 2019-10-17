@@ -122,8 +122,10 @@ void Chat::HandleMessage(std::stringstream message, std::string sender) {
     // check the command word
     if (command == "open" && sender == Auth::channel) {
         _canAddToQueue = true;
+        WriteMessage("The queue is now open!");
     } else if (command == "close" && sender == Auth::channel) {
         _canAddToQueue = false;
+        WriteMessage("The queue is now closed!");
     } else if (command == "add") {
         if (_canAddToQueue) {
             std::string levelCode;
