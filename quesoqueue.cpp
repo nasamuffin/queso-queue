@@ -167,18 +167,26 @@ std::optional<Level> QuesoQueue::Punt() {
 }
 
 std::optional<Level> QuesoQueue::Next() {
-    if (_levels.empty()) {
+    // Find who's next from List()
+    Level next;
+    auto list = List();
+
+    // Concatenate both lists
+    std::deque<Level> both(std::get<0>(list));
+    for (Level l : std::get<1>(list)) {
+        both.push_back(l);
+    }
+
+    // Need a "current" and a "next" for this to mean anything.
+    if (both.size() < 2) {
+        _levels.pop_front();
         return std::nullopt;
     }
 
     _levels.pop_front();
     SaveState();
 
-    if (_levels.empty()) {
-        return std::nullopt;
-    }
-
-    return std::make_optional(std::get<0>(List()).front());
+    return std::make_optional(both[1]);
 }
     
 std::optional<Level> QuesoQueue::Current() {
