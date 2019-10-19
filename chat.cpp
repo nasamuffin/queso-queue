@@ -112,16 +112,22 @@ std::string Chat::LevelListMessage(PriorityQueso list) {
     std::stringstream ss;
     auto online = std::get<0>(list);
     auto offline = std::get<1>(list);
-
-    for(Level l : online)
-        ss << l.submitter << " (online), ";
-    for(Level l : offline)
-        ss << l.submitter << " (offline), ";
-
-    // TODO clean up trailing ", "
-    if (ss.str().empty()) {
-        ss << "There are no levels in the queue :C";
+    bool first = true;
+    if (online.empty() && offline.empty()) {
+        return "There are no levels in the queue :C";
     }
+
+    ss << "There are " << online.size() + offline.size()
+       << " levels in the queue: ";
+
+    for(Level l : online) {
+        ss << l.submitter << (first ? " (current), " : " (online), ");
+        first = false;
+    }
+    for(Level l : offline) {
+        ss << l.submitter << " (offline), ";
+    }
+
     return ss.str();
 }
 

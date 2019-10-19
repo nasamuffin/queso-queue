@@ -56,10 +56,12 @@ std::string QuesoQueue::Add(Level level) {
         _levels.push_back(level);
         std::stringstream ss;
         // Since they JUST added it, we can pretty safely assume they're online.
-        ss << "Your level has been added to the queue behind ";
-        ss << std::get<0>(List()).size() - 1;
-        ss << " viewers who are online right now (there are ";
-        ss << _levels.size() << " total levels in queue, including yours).";
+        ss << level.submitter;
+        ss << ", ";
+        ss << level.levelCode;
+        ss << " has been added to the queue. Currently in position #";
+        ss << std::get<0>(List()).size();
+        ss << ".";
         SaveState();
         return ss.str();
     }
