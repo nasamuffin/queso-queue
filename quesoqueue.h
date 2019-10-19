@@ -50,6 +50,7 @@ class QuesoQueue {
     void LoadLastState();
 
   private:
+    bool isValidLevelCode(std::string levelCode);
     bool isOnline(Level l);
     std::deque<Level> _levels;
     Twitch _twitch;  // query online state

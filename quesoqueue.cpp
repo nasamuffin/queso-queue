@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <iostream>
 #include <fstream>
+#include <regex>
 #include <sstream>
 #include <tuple>
 
@@ -12,9 +13,35 @@ QuesoQueue::QuesoQueue(const Twitch &twitch) : _twitch(twitch) {
     // ...
 }
 
+bool QuesoQueue::isValidLevelCode(std::string levelCode) {
+    std::string levelBit("["
+        "A-Ha-h" // exclude I
+        "J-Nj-n" // exclude O
+        "P-Yp-y" // exclude Z
+        "0-9"    // numbers
+        "]");
+    std::string delimBit("[-. ]");
+    std::regex validLevelCode(
+        " ?" + // GetRemainder sometimes gives us extra whitespace??
+        levelBit + "{3}" + // the first chonk
+        delimBit + "?" + // it's ok not to use a delimiter
+        levelBit + "{3}" + // the second chonk
+        delimBit + "?" + // still ok not to use a delimiter
+        levelBit + "{3}", // the last chonk
+        std::regex_constants::egrep
+    );
+
+    return std::regex_match(levelCode, validLevelCode);
+}
+
 std::string QuesoQueue::Add(Level level) {
     if (_levels.size() >= maxSize) {
         return std::string("Sorry, the level queue is full!");
+    }
+
+    if (!isValidLevelCode(level.levelCode)) {
+        return std::string("I'm pretty sure '" + level.levelCode + "' isn't " +
+                "valid. Try again!");
     }
 
     // Does the viewer already have a level in queue?
@@ -83,6 +110,11 @@ std::string QuesoQueue::Remove(std::string username) {
 }
 
 std::string QuesoQueue::Replace(std::string username, std::string newLevelCode) {
+    if (!isValidLevelCode(newLevelCode)) {
+        return std::string("I'm pretty sure '" + newLevelCode + "' isn't " +
+                "valid. Try again!");
+    }
+
     auto toReplace = std::find_if(_levels.begin(),
                             _levels.end(),
                             [username](Level l) {
