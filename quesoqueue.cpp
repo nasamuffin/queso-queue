@@ -22,7 +22,7 @@ bool QuesoQueue::isValidLevelCode(std::string levelCode) {
         "]");
     std::string delimBit("[-. ]");
     std::regex validLevelCode(
-        " ?" + // GetRemainder sometimes gives us extra whitespace??
+        " +" + // GetRemainder sometimes gives us extra whitespace??
         levelBit + "{3}" + // the first chonk
         delimBit + "?" + // it's ok not to use a delimiter
         levelBit + "{3}" + // the second chonk
@@ -148,6 +148,22 @@ int QuesoQueue::Position(std::string username) {
         }
     }
     return -1;
+}
+
+std::optional<Level> QuesoQueue::Punt() {
+    if (_levels.empty()) {
+        std::cout << "no levels" << std::endl;
+        return std::nullopt;
+    }
+
+    auto top = Current();
+    if (!top) {
+        std::cout << "no current level" << std::endl;
+        return std::nullopt;
+    }
+    auto next = Next();
+    Add(top.value());
+    return next;
 }
 
 std::optional<Level> QuesoQueue::Next() {

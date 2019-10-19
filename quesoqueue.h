@@ -42,6 +42,11 @@ class QuesoQueue {
     std::optional<Level> Current();
 
     /**
+     * Takes the front level, and pushes it to the back.
+     */
+    std::optional<Level> Punt();
+
+    /**
      * Split the stored level queue into online and offline for printing
      */
     PriorityQueso List();

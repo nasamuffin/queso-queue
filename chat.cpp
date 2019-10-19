@@ -211,6 +211,16 @@ void Chat::HandleMessage(std::stringstream message, std::string sender) {
                                      + l->submitter));
         }
         WriteMessage(NextLevelMessage(l));
+    } else if (command == "punt" && sender == Auth::channel) {
+        WriteMessage("Ok, I'll save that one for later...");
+        _timer.Reset();
+        _timer.Start();
+        std::optional<Level> l = _qq.Punt();
+        if (l) {
+            WriteMessage(std::string("/marker " + l->levelCode + ", submitted by "
+                                     + l->submitter));
+        }
+        WriteMessage(NextLevelMessage(l));
     } else if (command == "current") {
         WriteMessage(CurrentLevelMessage(_qq.Current()));
     } else if (command == "list") {
