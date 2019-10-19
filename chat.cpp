@@ -144,8 +144,7 @@ void Chat::HandleMessage(std::stringstream message, std::string sender) {
         WriteMessage("The queue is now closed!");
     } else if (command == "add") {
         if (_canAddToQueue || sender == Auth::channel) {
-            std::string levelCode;
-            message >> levelCode;
+            std::string levelCode = message.str();
             Level l;
             l.levelCode = levelCode;
             l.submitter = sender;

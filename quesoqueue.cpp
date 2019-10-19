@@ -114,7 +114,7 @@ void QuesoQueue::LoadLastState() {
     while(savefile) {
         Level l;
         savefile >> l.submitter;
-        savefile >> l.levelCode;
+        std::getline(savefile, l.levelCode);
         if (l.submitter.empty() || l.levelCode.empty()) {
             continue;
         }
