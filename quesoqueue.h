@@ -46,6 +46,11 @@ class QuesoQueue {
      */
     PriorityQueso List();
 
+    /**
+     * Report the requester's level's position in the JIT pqueue.
+     */
+    int Position(std::string username);
+
     void SaveState();
     void LoadLastState();
 

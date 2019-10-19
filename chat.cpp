@@ -153,6 +153,22 @@ std::string Chat::CurrentLevelMessage(std::optional<Level> l) {
     return ss.str();
 }
 
+std::string Chat::PositionMessage(int position) {
+    std::stringstream msg;
+    switch (position) {
+    case -1:
+        msg << "Looks like you're not in the queue. Try !add AAA-AAA-AAA.";
+        break;
+    case 1:
+        msg << "Your level is being played right now!";
+        break;
+    default:
+        msg << "You are currently in position " << position;
+        break;
+    }
+    return msg.str();
+}
+
 void Chat::HandleMessage(std::stringstream message, std::string sender) {
     std::string command;
     // take just the first word (bot word goes in the front)
@@ -200,7 +216,7 @@ void Chat::HandleMessage(std::stringstream message, std::string sender) {
     } else if (command == "list") {
         WriteMessage(LevelListMessage(_qq.List()));
     } else if (command == "position") {
-        //WriteMessage(PositionMessage(_qq.Position(sender)));
+        WriteMessage(PositionMessage(_qq.Position(sender)));
     } else if ((command == "resume" || command == "start") && sender == Auth::channel) {
         _timer.Start();
         WriteMessage("Timer resumed! Get going!");

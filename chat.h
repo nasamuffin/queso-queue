@@ -20,7 +20,7 @@ class Chat {
   private:
     std::string NextLevelMessage(std::optional<Level> l);
     std::string CurrentLevelMessage(std::optional<Level> l);
-    std::string PositionMessage(Level l);
+    std::string PositionMessage(int position);
     std::string LevelListMessage(PriorityQueso list);
     static std::string GetRemainder(std::stringstream &message);
 

@@ -134,6 +134,22 @@ std::string QuesoQueue::Replace(std::string username, std::string newLevelCode) 
     }
 }
 
+int QuesoQueue::Position(std::string username) {
+    if (_levels.empty() || std::get<0>(List()).empty() ) {
+        return -1;
+    }
+
+    int position = 0;
+    auto online = std::get<0>(List());
+    for (Level l : online) {
+        position++;
+        if (l.submitter == username) {
+            return position;
+        }
+    }
+    return -1;
+}
+
 std::optional<Level> QuesoQueue::Next() {
     if (_levels.empty()) {
         return std::nullopt;
