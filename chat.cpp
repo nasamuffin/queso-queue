@@ -155,9 +155,13 @@ void Chat::HandleMessage(std::stringstream message, std::string sender) {
         }
     } else if (command == "remove") {
         // TODO - this might be optional
-        std::string levelCode;
-        message >> levelCode;
-        WriteMessage(_qq.Remove(sender, levelCode));
+        if (sender == Auth::channel) {
+            std::string toRemove;
+            message >> toRemove;
+            WriteMessage(_qq.ModRemove(toRemove));
+        } else {
+            WriteMessage(_qq.Remove(sender));
+        }
     } else if (command == "next" && sender == Auth::channel) {
         _timer.Reset();
         _timer.Start();

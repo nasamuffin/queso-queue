@@ -20,9 +20,10 @@ class QuesoQueue {
 
     /**
      * Removes the level submitted by the user. Or, if the user is admin,
-     * remove the level with the specified code.
+     * remove the level with the specified username
      */
-    std::string Remove(std::string username, std::string levelCode = "");
+    std::string Remove(std::string username);
+    std::string ModRemove(std::string username);
 
     /**
      * Pop the top of the queue and return the new top (subject to priority queue split)
@@ -46,6 +47,5 @@ class QuesoQueue {
     bool isOnline(Level l);
     std::deque<Level> _levels;
     Twitch _twitch;  // query online state
-    std::string _modPlsDelete; // TODO moderator name
     const size_t maxSize = 15;
 };

@@ -41,31 +41,35 @@ std::string QuesoQueue::Add(Level level) {
     }
 }
 
-std::string QuesoQueue::Remove(std::string username, std::string levelCode) {
-    auto toRemove = _levels.end();
-    // Check if admin
-    if (username == _modPlsDelete) {
-        // remove the level with the matching code
-        toRemove = std::find_if(_levels.begin(),
-                                _levels.end(),
-                                [levelCode](Level l) {
-                                   return l.levelCode == levelCode;
-                                });
-    // otherwise, remove the level with matching username
-    } else {
-        toRemove = std::find_if(_levels.begin(),
-                                _levels.end(),
-                                [username](Level l) {
-                                   return l.submitter == username;
-                                });
+std::string QuesoQueue::ModRemove(std::string username) {
+    // remove the level with the matching code
+    auto toRemove = std::find_if(_levels.begin(),
+                            _levels.end(),
+                            [username](Level l) {
+                               return l.submitter == username;
+                            });
+    // delet
+    if (toRemove != _levels.end()) {
+      _levels.erase(toRemove);
+        SaveState();
     }
+
+    return std::string("Ok, I removed " + username + "'s level from the queue.");
+}
+
+std::string QuesoQueue::Remove(std::string username) {
+    auto toRemove = std::find_if(_levels.begin(),
+                            _levels.end(),
+                            [username](Level l) {
+                               return l.submitter == username;
+                            });
                         
     // delet
     if (toRemove != _levels.end()) {
       _levels.erase(toRemove);
         SaveState();
     }
-    return std::string("PLACEHOLDER");
+    return std::string("Ok " + username + ", your level was removed from the queue.");
 }
 
 Level QuesoQueue::Next() {
