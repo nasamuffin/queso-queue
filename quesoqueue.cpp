@@ -42,6 +42,11 @@ std::string QuesoQueue::Add(Level level) {
 }
 
 std::string QuesoQueue::ModRemove(std::string username) {
+    if (username.empty()) {
+        return std::string("You can use !remove <username> to kick out someone "
+                "else's level; if you want to skip the current one use !next.");
+    }
+
     // remove the level with the matching code
     auto toRemove = std::find_if(_levels.begin(),
                             _levels.end(),
@@ -50,11 +55,13 @@ std::string QuesoQueue::ModRemove(std::string username) {
                             });
     // delet
     if (toRemove != _levels.end()) {
-      _levels.erase(toRemove);
+        _levels.erase(toRemove);
         SaveState();
+        return std::string("Ok, I removed " + username + "'s level from the queue.");
+    } else {
+        return std::string("The level by " + username + " isn't in the queue " +
+            "now. It wasn't before, but it isn't now, too.");
     }
-
-    return std::string("Ok, I removed " + username + "'s level from the queue.");
 }
 
 std::string QuesoQueue::Remove(std::string username) {
@@ -68,8 +75,11 @@ std::string QuesoQueue::Remove(std::string username) {
     if (toRemove != _levels.end()) {
       _levels.erase(toRemove);
         SaveState();
+        return std::string("Ok " + username + ", your level was removed from the queue.");
+    } else {
+        return std::string("Ok " + username + ", your isn't in the queue " +
+            "now. It wasn't before, but it isn't now, too.");
     }
-    return std::string("Ok " + username + ", your level was removed from the queue.");
 }
 
 std::string QuesoQueue::Replace(std::string username, std::string newLevelCode) {
