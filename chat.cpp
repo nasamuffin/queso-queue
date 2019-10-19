@@ -165,7 +165,10 @@ void Chat::HandleMessage(std::stringstream message, std::string sender) {
     } else if (command == "next" && sender == Auth::channel) {
         _timer.Reset();
         _timer.Start();
-        WriteMessage(NextLevelMessage(_qq.Next()));
+        Level l = _qq.Next();
+        WriteMessage(std::string("/marker " + l.levelCode + ", submitted by "
+                                 + l.submitter));
+        WriteMessage(NextLevelMessage(l));
     } else if (command == "current") {
         WriteMessage(CurrentLevelMessage(_qq.Current()));
     } else if (command == "list") {
