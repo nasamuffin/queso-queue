@@ -33,6 +33,15 @@ void Chat::Connect() {
     // Block til I'm authenticated.
 }
 
+std::string Chat::GetRemainder(std::stringstream &ss) {
+    std::string remainder, tmp;
+    while (ss >> tmp) {
+        remainder += " ";
+        remainder += tmp;
+    }
+    return remainder;
+}
+
 void Chat::Listen() {
     char sockbuff[4096];
 
@@ -152,7 +161,7 @@ void Chat::HandleMessage(std::stringstream message, std::string sender) {
         WriteMessage("The queue is now closed!");
     } else if (command == "add") {
         if (_canAddToQueue || sender == Auth::channel) {
-            std::string levelCode = message.str();
+            std::string levelCode = Chat::GetRemainder(message);
             Level l;
             l.levelCode = levelCode;
             l.submitter = sender;
@@ -170,7 +179,7 @@ void Chat::HandleMessage(std::stringstream message, std::string sender) {
             WriteMessage(_qq.Remove(sender));
         }
     } else if (command == "replace") {
-        WriteMessage(_qq.Replace(sender, message.str()));
+        WriteMessage(_qq.Replace(sender, GetRemainder(message)));
     } else if (command == "next" && sender == Auth::channel) {
         _timer.Reset();
         _timer.Start();
