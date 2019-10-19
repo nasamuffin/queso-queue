@@ -4,6 +4,7 @@
 
 class Timer {
   public:
+    Timer();
     void Start();
     void Pause();
     void Reset();

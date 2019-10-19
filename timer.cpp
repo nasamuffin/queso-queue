@@ -2,6 +2,10 @@
 
 #include <iostream>
 
+Timer::Timer() {
+    _timeRemaining = _defaultTimeout;
+}
+
 void Timer::Start() {
     _finishTime = std::chrono::system_clock::now() + _timeRemaining;
     _running = true;
@@ -12,8 +16,8 @@ void Timer::Pause() {
 }
 
 void Timer::Reset() {
-    _running = false;
     _timeRemaining = _defaultTimeout;
+    _running = false;
 }
 
 bool Timer::CheckTimer() {

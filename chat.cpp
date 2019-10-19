@@ -172,10 +172,16 @@ void Chat::HandleMessage(std::stringstream message, std::string sender) {
         WriteMessage(LevelListMessage(_qq.List()));
     } else if (command == "position") {
         //WriteMessage(PositionMessage(_qq.Position(sender)));
-    } else if (command == "resume" && sender == Auth::channel) {
+    } else if ((command == "resume" || command == "start") && sender == Auth::channel) {
         _timer.Start();
+        WriteMessage("Timer resumed! Get going!");
     } else if (command == "pause" && sender == Auth::channel) {
         _timer.Pause();
+        WriteMessage("Timer paused... drink some water.");
+    } else if (command == "restart" && sender == Auth::channel) {
+        _timer.Reset();
+        _timer.Start();
+        WriteMessage("Starting the clock over! Don't mess up this time.");
     } else if (command == "restore" && sender == Auth::channel) {
         _qq.LoadLastState();
     }
