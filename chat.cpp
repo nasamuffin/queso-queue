@@ -169,6 +169,8 @@ void Chat::HandleMessage(std::stringstream message, std::string sender) {
         } else {
             WriteMessage(_qq.Remove(sender));
         }
+    } else if (command == "replace") {
+        WriteMessage(_qq.Replace(sender, message.str()));
     } else if (command == "next" && sender == Auth::channel) {
         _timer.Reset();
         _timer.Start();

@@ -27,6 +27,11 @@ class QuesoQueue {
     std::string ModRemove(std::string username);
 
     /**
+     * Replaces the level a user currently has in queue with a new code.
+     */
+    std::string Replace(std::string username, std::string newLevelCode);
+
+    /**
      * Pop the top of the queue and return the new top (subject to priority queue split)
      */
     std::optional<Level> Next();

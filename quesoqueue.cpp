@@ -72,6 +72,24 @@ std::string QuesoQueue::Remove(std::string username) {
     return std::string("Ok " + username + ", your level was removed from the queue.");
 }
 
+std::string QuesoQueue::Replace(std::string username, std::string newLevelCode) {
+    auto toReplace = std::find_if(_levels.begin(),
+                            _levels.end(),
+                            [username](Level l) {
+                               return l.submitter == username;
+                            });
+
+    if (toReplace != _levels.end()) {
+        toReplace->levelCode = newLevelCode;
+        SaveState();
+        return std::string("Ok " + username + ", you are now in queue with level "
+                           + newLevelCode + ".");
+    } else {
+        return std::string("I didn't find a level for " + username
+                           + ". Try !add.");
+    }
+}
+
 std::optional<Level> QuesoQueue::Next() {
     if (_levels.empty()) {
         return std::nullopt;
