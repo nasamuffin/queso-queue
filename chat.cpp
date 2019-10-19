@@ -116,17 +116,25 @@ std::string Chat::LevelListMessage(PriorityQueso list) {
     return ss.str();
 }
 
-std::string Chat::NextLevelMessage(Level l) {
+std::string Chat::NextLevelMessage(std::optional<Level> l) {
+    if (!l) {
+        return std::string("The queue is empty. Feed me levels!");
+    }
+
     std::stringstream ss;
-    ss << "Next up in queue is " << l.levelCode << ", submitted by "
-       << l.submitter;
+    ss << "Next up in queue is " << l->levelCode << ", submitted by "
+       << l->submitter;
     return ss.str();
 }
 
-std::string Chat::CurrentLevelMessage(Level l) {
+std::string Chat::CurrentLevelMessage(std::optional<Level> l) {
+    if (!l) {
+        return std::string("We're not playing a level right now! D:");
+    }
+
     std::stringstream ss;
-    ss << "Currently playing " << l.levelCode << ", submitted by "
-       << l.submitter;
+    ss << "Currently playing " << l->levelCode << ", submitted by "
+       << l->submitter;
     return ss.str();
 }
 
@@ -164,9 +172,11 @@ void Chat::HandleMessage(std::stringstream message, std::string sender) {
     } else if (command == "next" && sender == Auth::channel) {
         _timer.Reset();
         _timer.Start();
-        Level l = _qq.Next();
-        WriteMessage(std::string("/marker " + l.levelCode + ", submitted by "
-                                 + l.submitter));
+        std::optional<Level> l = _qq.Next();
+        if (l) {
+            WriteMessage(std::string("/marker " + l->levelCode + ", submitted by "
+                                     + l->submitter));
+        }
         WriteMessage(NextLevelMessage(l));
     } else if (command == "current") {
         WriteMessage(CurrentLevelMessage(_qq.Current()));

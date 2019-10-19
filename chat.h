@@ -18,8 +18,8 @@ class Chat {
     void Listen();
 
   private:
-    std::string NextLevelMessage(Level l);
-    std::string CurrentLevelMessage(Level l);
+    std::string NextLevelMessage(std::optional<Level> l);
+    std::string CurrentLevelMessage(std::optional<Level> l);
     std::string PositionMessage(Level l);
     std::string LevelListMessage(PriorityQueso list);
 

@@ -72,16 +72,27 @@ std::string QuesoQueue::Remove(std::string username) {
     return std::string("Ok " + username + ", your level was removed from the queue.");
 }
 
-Level QuesoQueue::Next() {
+std::optional<Level> QuesoQueue::Next() {
+    if (_levels.empty()) {
+        return std::nullopt;
+    }
+
     _levels.pop_front();
-    auto pq = this->List();
     SaveState();
 
-    return std::get<0>(pq).front();
+    if (_levels.empty()) {
+        return std::nullopt;
+    }
+
+    return std::make_optional(std::get<0>(List()).front());
 }
     
-Level QuesoQueue::Current() {
-    return _levels.at(0);
+std::optional<Level> QuesoQueue::Current() {
+    if (_levels.empty()) {
+        return std::nullopt;
+    }
+
+    return std::make_optional(_levels.at(0));
 }
 
 PriorityQueso QuesoQueue::List() {

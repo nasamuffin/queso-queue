@@ -4,6 +4,7 @@
 #include "twitch.h"
 
 #include <deque>
+#include <optional>
 #include <string>
 #include <vector>
 
@@ -28,12 +29,12 @@ class QuesoQueue {
     /**
      * Pop the top of the queue and return the new top (subject to priority queue split)
      */
-    Level Next();
+    std::optional<Level> Next();
 
     /**
      * Report the level currently being played (not subject to priority queue split)
      */
-    Level Current();
+    std::optional<Level> Current();
 
     /**
      * Split the stored level queue into online and offline for printing
