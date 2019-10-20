@@ -21,10 +21,10 @@ class Chat {
     std::string NextLevelMessage(std::optional<Level> l);
     std::string CurrentLevelMessage(std::optional<Level> l);
     std::string PositionMessage(int position);
-    std::string LevelListMessage(PriorityQueso list);
+    std::string LevelListMessage(std::optional<Level> current, PriorityQueso list);
     static std::string GetRemainder(std::stringstream &message);
 
-    bool _canAddToQueue;
+    bool _canAddToQueue = true;
     QuesoQueue _qq;
     Timer _timer;
     std::string _priorityText;

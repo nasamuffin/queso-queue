@@ -108,21 +108,23 @@ void Chat::WriteMessage(std::string message) {
     Write(std::string("PRIVMSG #") + Auth::channel + std::string(" :") + message + '\n');
 }
 
-std::string Chat::LevelListMessage(PriorityQueso list) {
+std::string Chat::LevelListMessage(std::optional<Level> current, PriorityQueso list) {
     std::stringstream ss;
     auto online = std::get<0>(list);
     auto offline = std::get<1>(list);
-    bool first = true;
-    if (online.empty() && offline.empty()) {
+    if (!current && online.empty() && offline.empty()) {
         return "There are no levels in the queue :C";
     }
 
-    ss << "There are " << online.size() + offline.size()
+    ss << "There are " << online.size() + offline.size() + (current ? 1 : 0)
        << " levels in the queue: ";
 
+    if (current) {
+        ss << current->submitter << "(current), ";
+    }
+
     for(Level l : online) {
-        ss << l.submitter << (first ? " (current), " : " (online), ");
-        first = false;
+        ss << l.submitter << " (online), ";
     }
     for(Level l : offline) {
         ss << l.submitter << " (offline), ";
@@ -159,11 +161,11 @@ std::string Chat::PositionMessage(int position) {
     case -1:
         msg << "Looks like you're not in the queue. Try !add AAA-AAA-AAA.";
         break;
-    case 1:
+    case 0:
         msg << "Your level is being played right now!";
         break;
     default:
-        msg << "You are currently in position " << position;
+        msg << "You are currently in position " << position+1;
         break;
     }
     return msg.str();
@@ -224,7 +226,7 @@ void Chat::HandleMessage(std::stringstream message, std::string sender) {
     } else if (command == "current") {
         WriteMessage(CurrentLevelMessage(_qq.Current()));
     } else if (command == "list") {
-        WriteMessage(LevelListMessage(_qq.List()));
+        WriteMessage(LevelListMessage(_qq.Current(), _qq.List()));
     } else if (command == "position") {
         WriteMessage(PositionMessage(_qq.Position(sender)));
     } else if ((command == "resume" || command == "start") && sender == Auth::channel) {

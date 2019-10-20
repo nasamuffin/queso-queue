@@ -44,12 +44,17 @@ std::string QuesoQueue::Add(Level level) {
                 "valid. Try again!");
     }
 
+    if (Current()->submitter == level.submitter && level.submitter != Auth::channel) {
+        return std::string("Wait til your level has been completed before you submit again.");
+    }
+
     // Does the viewer already have a level in queue?
     auto result = std::find_if(std::begin(_levels),
                                std::end(_levels),
                                [level] (Level l) {
                                    return l.submitter==level.submitter;
                                });
+
     // Or, if the submitter is the channel name, then THEY OWN US.
     if (result == _levels.end() || level.submitter == Auth::channel) {
         // push to the end of the queue
@@ -60,7 +65,7 @@ std::string QuesoQueue::Add(Level level) {
         ss << ", ";
         ss << level.levelCode;
         ss << " has been added to the queue. Currently in position #";
-        ss << std::get<0>(List()).size();
+        ss << std::get<0>(List()).size()+1;
         ss << ".";
         SaveState();
         return ss.str();
@@ -101,12 +106,14 @@ std::string QuesoQueue::Remove(std::string username) {
                             });
                         
     // delet
-    if (toRemove != _levels.end()) {
+    if (Current()->submitter == username) {
+        return std::string("We're playing that now! Don't take this away from us!");
+    } else if (toRemove != _levels.end()) {
       _levels.erase(toRemove);
         SaveState();
         return std::string("Ok " + username + ", your level was removed from the queue.");
     } else {
-        return std::string("Ok " + username + ", your isn't in the queue " +
+        return std::string("Ok " + username + ", your level isn't in the queue " +
             "now. It wasn't before, but it isn't now, too.");
     }
 }
@@ -128,6 +135,11 @@ std::string QuesoQueue::Replace(std::string username, std::string newLevelCode) 
         SaveState();
         return std::string("Ok " + username + ", you are now in queue with level "
                            + newLevelCode + ".");
+    } else if (Current()->submitter == username) {
+        _current->levelCode = newLevelCode;
+        SaveState();
+        return std::string("Ok " + username + ", you are now in queue with level "
+                           + newLevelCode + ".");
     } else {
         return std::string("I didn't find a level for " + username
                            + ". Try !add.");
@@ -135,30 +147,37 @@ std::string QuesoQueue::Replace(std::string username, std::string newLevelCode) 
 }
 
 int QuesoQueue::Position(std::string username) {
+    if (Current()->submitter == username) {
+        return 0;
+    }
     if (_levels.empty() || std::get<0>(List()).empty() ) {
         return -1;
     }
 
     int position = 0;
-    auto online = std::get<0>(List());
-    for (Level l : online) {
+    auto list = List();
+    auto both = std::get<0>(list);
+    for (Level l : std::get<1>(list)) {
+        both.push_back(l);
+    }
+
+    for (Level l : both) {
         position++;
         if (l.submitter == username) {
             return position;
         }
     }
+    // not in queue
     return -1;
 }
 
 std::optional<Level> QuesoQueue::Punt() {
     if (_levels.empty()) {
-        std::cout << "no levels" << std::endl;
         return std::nullopt;
     }
 
     auto top = Current();
     if (!top) {
-        std::cout << "no current level" << std::endl;
         return std::nullopt;
     }
     auto next = Next();
@@ -167,8 +186,6 @@ std::optional<Level> QuesoQueue::Punt() {
 }
 
 std::optional<Level> QuesoQueue::Next() {
-    // Find who's next from List()
-    Level next;
     auto list = List();
 
     // Concatenate both lists
@@ -176,36 +193,37 @@ std::optional<Level> QuesoQueue::Next() {
     for (Level l : std::get<1>(list)) {
         both.push_back(l);
     }
-
-    // Need a "current" and a "next" for this to mean anything.
-    if (both.size() < 2) {
-        _levels.pop_front();
-        return std::nullopt;
+    
+    if (both.empty()) {
+        _current = std::nullopt;
+    } else {
+        _current = std::make_optional(both.front());
     }
 
-    _levels.pop_front();
+    // Remove current (it's in a special current place now)
+    for (auto pos = _levels.begin(); pos != _levels.end(); pos++) {
+        if (pos->submitter == _current->submitter &&
+            pos->levelCode == _current ->levelCode) {
+            _levels.erase(pos);
+            break;
+        }
+    }
     SaveState();
-
-    return std::make_optional(both[1]);
+    return _current;
 }
     
 std::optional<Level> QuesoQueue::Current() {
-    if (_levels.empty()) {
-        return std::nullopt;
-    }
-
-    return std::make_optional(_levels.at(0));
+    //// This is the case when we haven't started yet?
+    //if (!_current && !_levels.empty()) {
+    //    _current = Next();
+    //}
+    return _current;
 }
 
 PriorityQueso QuesoQueue::List() {
     std::deque<Level> online, offline;
-    bool isFirst = true;
     for (Level l : _levels) {
-        // The first person in queue is special.
-        if (isFirst) {
-            online.push_back(l);
-            isFirst = false;
-        } else if (_twitch.isOnline(l.submitter, Auth::channel)) {
+        if (_twitch.isOnline(l.submitter, Auth::channel)) {
             online.push_back(l);
         } else {
             offline.push_back(l);
@@ -216,6 +234,9 @@ PriorityQueso QuesoQueue::List() {
 
 void QuesoQueue::SaveState() {
     std::ofstream savefile("queso.save", std::ios_base::out | std::ios_base::trunc);
+    if (_current && !(_current->submitter.empty() || _current->levelCode.empty())) {
+        savefile << _current->submitter << " " << _current->levelCode << std::endl;
+    }
     for (Level l : _levels) {
         savefile << l.submitter << " " << l.levelCode << std::endl;
     }
@@ -224,6 +245,11 @@ void QuesoQueue::SaveState() {
 void QuesoQueue::LoadLastState() {
     std::ifstream savefile("queso.save");
     _levels.clear();
+    if (savefile) {
+        _current = std::make_optional(Level());
+        savefile >> _current->submitter;
+        std::getline(savefile, _current->levelCode);
+    }
     while(savefile) {
         Level l;
         savefile >> l.submitter;

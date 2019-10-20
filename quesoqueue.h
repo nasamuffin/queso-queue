@@ -63,6 +63,7 @@ class QuesoQueue {
     bool isValidLevelCode(std::string levelCode);
     bool isOnline(Level l);
     std::deque<Level> _levels;
+    std::optional<Level> _current;
     Twitch _twitch;  // query online state
     const size_t maxSize = 15;
 };
