@@ -1,3 +1,0 @@
-/home/ubuntu/environment/queso-queue/build/CMakeFiles/rebuild_cache.dir
-/home/ubuntu/environment/queso-queue/build/CMakeFiles/queso.dir
-/home/ubuntu/environment/queso-queue/build/CMakeFiles/edit_cache.dir
