@@ -35,6 +35,7 @@ void Chat::Connect() {
 
 std::string Chat::GetRemainder(std::stringstream &ss) {
     std::string remainder, tmp;
+    ss >> remainder;
     while (ss >> tmp) {
         remainder += " ";
         remainder += tmp;
@@ -83,7 +84,7 @@ void Chat::Listen() {
             Write("PONG :tmi.twitch.tv\n");
             continue;
         }
-        
+
         std::cmatch m;
         if (std::regex_match(sockbuff, m, userMessage,
                 std::regex_constants::match_not_eol))
