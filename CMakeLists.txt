@@ -8,6 +8,7 @@ endif()
 project(queso CXX)
 
 add_subdirectory(3rdparty)
+add_subdirectory(chips)
 
 ### Use build/out for install directory
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
