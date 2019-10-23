@@ -30,6 +30,8 @@ set(SOURCES
     twitch.cpp
     quesoqueue.cpp
     chat.cpp
+    SimpleJSON/JSON.cpp
+    SimpleJSON/JSONValue.cpp
 )
 
 add_executable(
