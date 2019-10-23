@@ -118,7 +118,7 @@ std::string Chat::LevelListMessage(std::optional<Level> current, PriorityQueso l
     }
 
     ss << "There are " << online.size() + offline.size() + (current ? 1 : 0)
-       << " levels in the queue: ";
+       << " level(s) in the queue: ";
 
     if (current) {
         ss << current->submitter << "(current), ";
