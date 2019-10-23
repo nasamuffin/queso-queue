@@ -207,7 +207,6 @@ void Chat::HandleMessage(std::stringstream message, std::string sender) {
         WriteMessage(_qq.Replace(sender, GetRemainder(message)));
     } else if (command == "next" && sender == Auth::channel) {
         _timer.Reset();
-        _timer.Start();
         std::optional<Level> l = _qq.Next();
         if (l) {
             WriteMessage(std::string("/marker " + l->levelCode + ", submitted by "
@@ -217,7 +216,6 @@ void Chat::HandleMessage(std::stringstream message, std::string sender) {
     } else if (command == "punt" && sender == Auth::channel) {
         WriteMessage("Ok, I'll save that one for later...");
         _timer.Reset();
-        _timer.Start();
         std::optional<Level> l = _qq.Punt();
         if (l) {
             WriteMessage(std::string("/marker " + l->levelCode + ", submitted by "
