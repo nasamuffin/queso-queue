@@ -67,8 +67,8 @@ void Chat::Listen() {
         int ret = poll(&fd, 1, 1000);
 
         if (_timer.CheckTimer()) {
-            WriteMessage("The timer has expired for this level! Yikes! Let's "
-                         "roll for retries.");
+            WriteMessage("@" + std::string(Auth::channel) + " the timer has "
+                         "expired for this level! Let's roll for retries.");
             WriteMessage("!roll d10");
         }
 
@@ -230,14 +230,14 @@ void Chat::HandleMessage(std::stringstream message, std::string sender) {
         WriteMessage(PositionMessage(_qq.Position(sender)));
     } else if ((command == "resume" || command == "start") && sender == Auth::channel) {
         _timer.Start();
-        WriteMessage("Timer resumed! Get going!");
+        WriteMessage("Timer started! Get going!");
     } else if (command == "pause" && sender == Auth::channel) {
         _timer.Pause();
         WriteMessage("Timer paused... drink some water.");
     } else if (command == "restart" && sender == Auth::channel) {
         _timer.Reset();
         _timer.Start();
-        WriteMessage("Starting the clock over! Don't mess up this time.");
+        WriteMessage("Starting the clock over! CP Hype!");
     } else if (command == "restore" && sender == Auth::channel) {
         _qq.LoadLastState();
     }
