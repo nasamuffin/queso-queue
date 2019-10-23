@@ -56,11 +56,13 @@ std::string QuesoQueue::Add(Level level) {
 
     // Or, if the submitter is the channel name, then THEY OWN US.
     if (result == _levels.end() || level.submitter == Auth::channel) {
+        auto online_levels = std::get<0>(List()).size();
         // push to the end of the queue
         if (_levels.empty() && !Current().has_value()) {
             _current = std::make_optional(level);
         } else {
             _levels.push_back(level);
+            online_levels++;
         }
         std::stringstream ss;
         // Since they JUST added it, we can pretty safely assume they're online.
@@ -68,7 +70,7 @@ std::string QuesoQueue::Add(Level level) {
         ss << ", ";
         ss << level.levelCode;
         ss << " has been added to the queue. Currently in position #";
-        ss << std::get<0>(List()).size()+1;
+        ss << online_levels + 1;
         ss << ".";
         SaveState();
         return ss.str();
