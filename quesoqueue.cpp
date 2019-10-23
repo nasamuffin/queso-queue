@@ -184,7 +184,7 @@ std::optional<Level> QuesoQueue::Punt() {
         return std::nullopt;
     }
     auto next = Next();
-    Add(top.value());
+    std::cout << Add(top.value()) << std::endl;
     return next;
 }
 
@@ -225,8 +225,9 @@ std::optional<Level> QuesoQueue::Current() {
 
 PriorityQueso QuesoQueue::List() {
     std::deque<Level> online, offline;
+    std::set<std::string> online_users = _twitch.getOnlineUsers(Auth::channel);
     for (Level l : _levels) {
-        if (_twitch.isOnline(l.submitter, Auth::channel)) {
+        if (online_users.find(l.submitter) != online_users.end()) {
             online.push_back(l);
         } else {
             offline.push_back(l);
@@ -253,13 +254,13 @@ void QuesoQueue::LoadLastState() {
         if (savefile >> submitter) {
             _current = std::make_optional(Level());
             _current->submitter = submitter;
-            std::getline(savefile, _current->levelCode);
+            std::getline(savefile >> std::ws, _current->levelCode);
         }
     }
     while(savefile) {
         Level l;
         savefile >> l.submitter;
-        std::getline(savefile, l.levelCode);
+        std::getline(savefile >> std::ws, l.levelCode);
         if (l.submitter.empty() || l.levelCode.empty()) {
             continue;
         }
