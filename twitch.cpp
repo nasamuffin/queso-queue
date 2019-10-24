@@ -30,7 +30,7 @@ bool Twitch::isOnline(std::string username, std::string channel) {
             std::cerr << "Oh no! curl_easy_perform() failed: "
                       << curl_easy_strerror(res) << std::endl;
         }
-        curl_easy_cleanup;
+        curl_easy_cleanup(curl);
     }
 
     // This is a nasty hack.
@@ -56,7 +56,7 @@ std::set<std::string> Twitch::getOnlineUsers(const std::string& channel) {
             std::cerr << "Oh no! curl_easy_perform() failed: "
                       << curl_easy_strerror(res) << std::endl;
         }
-        curl_easy_cleanup;
+        curl_easy_cleanup(curl);
     }
 
     JSONValue *chatters = JSON::Parse(response.c_str())->Child(L"chatters");

@@ -48,6 +48,12 @@ add_executable(
 
 include_directories(${CURL_INCLUDE_DIR})
 
+if(MSVC)
+  target_compile_options(${PROJECT_NAME} PRIVATE /W4 /WX)
+else()
+  target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Werror)
+endif()
+
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
 spdlog_enable_warnings(${PROJECT_NAME})
 target_link_libraries(${PROJECT_NAME} ${CURL_LIBRARIES} spdlog::spdlog dl SimpleJSON)

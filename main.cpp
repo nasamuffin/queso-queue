@@ -3,7 +3,7 @@
 #include "timer.h"
 #include "twitch.h"
 
-int main(int argc, char *argv[]) {
+int main(int, char **) {
     Twitch t;
     QuesoQueue qq(t);
     qq.LoadLastState();
