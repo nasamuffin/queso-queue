@@ -7,6 +7,10 @@
 
 #include <string>
 #include <sstream>
+#include <functional>
+#include <map>
+
+#include "chips.h"
 
 class Chat {
   public:
@@ -37,4 +41,6 @@ class Chat {
 
     std::string _help =
         "Try these: !add ABC-DEF-GHI | !remove | !current | !list | !position";
+
+    std::unordered_map<std::string_view, ChipContainer> _commandMap;
 };

@@ -1,6 +1,14 @@
 cmake_minimum_required (VERSION 3.10)
 
+### Configure build type if not specified
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Debug)
+endif()
+
 project(queso CXX)
+
+add_subdirectory(3rdparty)
+add_subdirectory(chips)
 
 ### Use build/out for install directory
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
@@ -15,14 +23,14 @@ if(EXISTS "${LOC_PATH}")
     Feel free to remove CMakeCache.txt and CMakeFiles.")
 endif()
 
-### Configure build type if not specified
-if(NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE Debug)
-endif()
-
 ### Check for cURL
 set(CURL_LIBRARY "-lcurl")
 find_package(CURL REQUIRED)
+
+if(NOT TARGET spdlog)
+    # Stand-alone build
+    find_package(spdlog REQUIRED)
+endif()
 
 set(SOURCES
     main.cpp
@@ -30,6 +38,7 @@ set(SOURCES
     twitch.cpp
     quesoqueue.cpp
     chat.cpp
+    chips.cpp
     SimpleJSON/JSON.cpp
     SimpleJSON/JSONValue.cpp
 )
@@ -42,4 +51,5 @@ add_executable(
 include_directories(${CURL_INCLUDE_DIR})
 
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
-target_link_libraries(${PROJECT_NAME} ${CURL_LIBRARIES})
+spdlog_enable_warnings(${PROJECT_NAME})
+target_link_libraries(${PROJECT_NAME} ${CURL_LIBRARIES} spdlog::spdlog dl)

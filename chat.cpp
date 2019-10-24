@@ -1,6 +1,8 @@
 #include "chat.h"
 #include "../keys.h"
 
+#include <spdlog/spdlog.h>
+
 #include <cstring>
 #include <iostream>
 #include <poll.h>
@@ -9,8 +11,20 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <netdb.h>
+#include <filesystem>
 
 Chat::Chat(const QuesoQueue &qq, const Timer &timer) : _qq(qq), _timer(timer) {
+    namespace fs = std::filesystem;
+    static const std::regex chipModuleRegex(".*\\.so", std::regex_constants::egrep);
+
+    for(auto& p: fs::directory_iterator("chips")) {
+        std::cmatch m;
+        bool matched = std::regex_match(p.path().c_str(), m, chipModuleRegex, std::regex_constants::match_not_eol);
+        if (p.is_regular_file() && matched) {
+            auto cc = LoadChip(p.path().string());
+            _commandMap[cc.chip->command] = std::move(cc);
+        }
+    }
 }
 
 void Chat::Connect() {
@@ -240,5 +254,14 @@ void Chat::HandleMessage(std::stringstream message, std::string sender) {
         WriteMessage("Starting the clock over! CP Hype!");
     } else if (command == "restore" && sender == Auth::channel) {
         _qq.LoadLastState();
+    } else {
+        spdlog::info("Checking for matching chip command: {}", command);
+        auto chip = _commandMap.find(command);
+        if (chip != _commandMap.end()) {
+            const Chip *chipModule = chip->second.chip;
+            std::string moduleMsg = chipModule->chip(GetRemainder(message));
+            spdlog::info("ChipModule {} returned: {}", chipModule->name, moduleMsg);
+            WriteMessage(moduleMsg);
+        }
     }
 }
