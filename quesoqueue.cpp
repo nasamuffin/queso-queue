@@ -56,11 +56,13 @@ std::string QuesoQueue::Add(Level level) {
 
     // Or, if the submitter is the channel name, then THEY OWN US.
     if (result == _levels.end() || level.submitter == Auth::channel) {
+        auto online_levels = std::get<0>(List()).size();
         // push to the end of the queue
         if (_levels.empty() && !Current().has_value()) {
             _current = std::make_optional(level);
         } else {
             _levels.push_back(level);
+            online_levels++;
         }
         std::stringstream ss;
         // Since they JUST added it, we can pretty safely assume they're online.
@@ -68,7 +70,7 @@ std::string QuesoQueue::Add(Level level) {
         ss << ", ";
         ss << level.levelCode;
         ss << " has been added to the queue. Currently in position #";
-        ss << std::get<0>(List()).size()+1;
+        ss << online_levels + 1;
         ss << ".";
         SaveState();
         return ss.str();
@@ -184,7 +186,7 @@ std::optional<Level> QuesoQueue::Punt() {
         return std::nullopt;
     }
     auto next = Next();
-    Add(top.value());
+    std::cout << Add(top.value()) << std::endl;
     return next;
 }
 
@@ -225,8 +227,9 @@ std::optional<Level> QuesoQueue::Current() {
 
 PriorityQueso QuesoQueue::List() {
     std::deque<Level> online, offline;
+    std::set<std::string> online_users = _twitch.getOnlineUsers(Auth::channel);
     for (Level l : _levels) {
-        if (_twitch.isOnline(l.submitter, Auth::channel)) {
+        if (online_users.find(l.submitter) != online_users.end()) {
             online.push_back(l);
         } else {
             offline.push_back(l);
@@ -253,13 +256,13 @@ void QuesoQueue::LoadLastState() {
         if (savefile >> submitter) {
             _current = std::make_optional(Level());
             _current->submitter = submitter;
-            std::getline(savefile, _current->levelCode);
+            std::getline(savefile >> std::ws, _current->levelCode);
         }
     }
     while(savefile) {
         Level l;
         savefile >> l.submitter;
-        std::getline(savefile, l.levelCode);
+        std::getline(savefile >> std::ws, l.levelCode);
         if (l.submitter.empty() || l.levelCode.empty()) {
             continue;
         }

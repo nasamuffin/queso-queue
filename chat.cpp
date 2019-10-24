@@ -81,8 +81,8 @@ void Chat::Listen() {
         int ret = poll(&fd, 1, 1000);
 
         if (_timer.CheckTimer()) {
-            WriteMessage("The timer has expired for this level! Yikes! Let's "
-                         "roll for retries.");
+            WriteMessage("@" + std::string(Auth::channel) + " the timer has "
+                         "expired for this level! Let's roll for retries.");
             WriteMessage("!roll d10");
         }
 
@@ -132,7 +132,7 @@ std::string Chat::LevelListMessage(std::optional<Level> current, PriorityQueso l
     }
 
     ss << "There are " << online.size() + offline.size() + (current ? 1 : 0)
-       << " levels in the queue: ";
+       << " level(s) in the queue: ";
 
     if (current) {
         ss << current->submitter << "(current), ";
@@ -221,7 +221,6 @@ void Chat::HandleMessage(std::stringstream message, std::string sender) {
         WriteMessage(_qq.Replace(sender, GetRemainder(message)));
     } else if (command == "next" && sender == Auth::channel) {
         _timer.Reset();
-        _timer.Start();
         std::optional<Level> l = _qq.Next();
         if (l) {
             WriteMessage(std::string("/marker " + l->levelCode + ", submitted by "
@@ -231,7 +230,6 @@ void Chat::HandleMessage(std::stringstream message, std::string sender) {
     } else if (command == "punt" && sender == Auth::channel) {
         WriteMessage("Ok, I'll save that one for later...");
         _timer.Reset();
-        _timer.Start();
         std::optional<Level> l = _qq.Punt();
         if (l) {
             WriteMessage(std::string("/marker " + l->levelCode + ", submitted by "
@@ -246,14 +244,14 @@ void Chat::HandleMessage(std::stringstream message, std::string sender) {
         WriteMessage(PositionMessage(_qq.Position(sender)));
     } else if ((command == "resume" || command == "start") && sender == Auth::channel) {
         _timer.Start();
-        WriteMessage("Timer resumed! Get going!");
+        WriteMessage("Timer started! Get going!");
     } else if (command == "pause" && sender == Auth::channel) {
         _timer.Pause();
         WriteMessage("Timer paused... drink some water.");
     } else if (command == "restart" && sender == Auth::channel) {
         _timer.Reset();
         _timer.Start();
-        WriteMessage("Starting the clock over! Don't mess up this time.");
+        WriteMessage("Starting the clock over! CP Hype!");
     } else if (command == "restore" && sender == Auth::channel) {
         _qq.LoadLastState();
     } else {

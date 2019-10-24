@@ -39,6 +39,8 @@ set(SOURCES
     quesoqueue.cpp
     chat.cpp
     chips.cpp
+    SimpleJSON/JSON.cpp
+    SimpleJSON/JSONValue.cpp
 )
 
 add_executable(
