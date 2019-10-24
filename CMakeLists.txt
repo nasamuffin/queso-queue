@@ -39,8 +39,6 @@ set(SOURCES
     quesoqueue.cpp
     chat.cpp
     chips.cpp
-    SimpleJSON/JSON.cpp
-    SimpleJSON/JSONValue.cpp
 )
 
 add_executable(
@@ -52,4 +50,4 @@ include_directories(${CURL_INCLUDE_DIR})
 
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
 spdlog_enable_warnings(${PROJECT_NAME})
-target_link_libraries(${PROJECT_NAME} ${CURL_LIBRARIES} spdlog::spdlog dl)
+target_link_libraries(${PROJECT_NAME} ${CURL_LIBRARIES} spdlog::spdlog dl SimpleJSON)

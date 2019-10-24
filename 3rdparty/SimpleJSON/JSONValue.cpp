@@ -31,7 +31,7 @@
 #include <iostream>
 #include <math.h>
 
-#include "JSONValue.h"
+#include <SimpleJSON/JSONValue.h>
 
 #ifdef __MINGW32__
 #define wcsncasecmp wcsnicmp
