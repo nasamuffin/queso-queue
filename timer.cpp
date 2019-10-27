@@ -20,6 +20,10 @@ void Timer::Reset() {
     _running = false;
 }
 
+std::chrono::seconds Timer::Remaining() {
+    return _timeRemaining;
+}
+
 bool Timer::CheckTimer() {
     if (!_running) {
         return false;
