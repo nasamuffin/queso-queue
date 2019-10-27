@@ -1,12 +1,16 @@
 enable_testing()
 
 set (SOURCES
-     timer_test.cpp)
+     ../timer.cpp timer_test.cpp)
 
 set (UNIT_TEST ${PROJECT_NAME}_test)
 
 add_executable(${UNIT_TEST}
                ${SOURCES})
+
+target_include_directories(${UNIT_TEST}
+                           PUBLIC
+                           ${CMAKE_SOURCE_DIR})
 
 target_link_libraries(${UNIT_TEST} gtest)
 
