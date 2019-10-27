@@ -11,16 +11,16 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <netdb.h>
-#include <filesystem>
+#include <experimental/filesystem>
 
 Chat::Chat(const QuesoQueue &qq, const Timer &timer) : _qq(qq), _timer(timer) {
-    namespace fs = std::filesystem;
+    namespace fs = std::experimental::filesystem;
     static const std::regex chipModuleRegex(".*\\.so", std::regex_constants::egrep);
 
     for(auto& p: fs::directory_iterator("chips")) {
         std::cmatch m;
         bool matched = std::regex_match(p.path().c_str(), m, chipModuleRegex, std::regex_constants::match_not_eol);
-        if (p.is_regular_file() && matched) {
+        if (matched) {
             auto cc = LoadChip(p.path().string());
             _commandMap[cc.chip->command] = std::move(cc);
         }
