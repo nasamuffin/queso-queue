@@ -10,6 +10,8 @@ project(queso CXX)
 add_subdirectory(3rdparty)
 add_subdirectory(chips)
 
+add_subdirectory(tests)
+
 ### Use build/out for install directory
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
   set(CMAKE_INSTALL_PREFIX "${PROJECT_BINARY_DIR}/out" CACHE PATH "binary output directory" FORCE)
