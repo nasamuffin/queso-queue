@@ -5,6 +5,7 @@
 
 #include <cstring>
 #include <iostream>
+#include <numeric>
 #include <poll.h>
 #include <regex>
 #include <sstream>
@@ -131,19 +132,15 @@ std::string Chat::LevelListMessage(std::optional<Level> current, PriorityQueso l
         return "There are no levels in the queue :C";
     }
 
-    ss << "There are " << online.size() + offline.size() + (current ? 1 : 0)
-       << " level(s) in the queue: ";
+    ss << online.size() + (current ? 1 : 0)
+       << " online level(s) in the queue: ";
 
-    if (current) {
-        ss << current->submitter << "(current), ";
-    }
-
-    for(Level l : online) {
-        ss << l.submitter << " (online), ";
-    }
-    for(Level l : offline) {
-        ss << l.submitter << " (offline), ";
-    }
+    ss << std::accumulate(online.begin(), online.end(),
+            std::string(current->submitter + " (current)"),
+            [](std::string acc, Level x){
+                return acc + ", " + x.submitter;
+            });
+    ss << ". There are also " << offline.size() << " offline level(s) in the queue.";
 
     return ss.str();
 }
