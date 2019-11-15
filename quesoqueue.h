@@ -47,6 +47,12 @@ class QuesoQueue {
     std::optional<Level> Punt();
 
     /**
+     * Pull the next level from the specified user to the front of the queue.
+     * Pop the current level.
+     */
+    std::optional<Level> Dip(std::string username);
+
+    /**
      * Split the stored level queue into online and offline for printing
      */
     PriorityQueso List();
