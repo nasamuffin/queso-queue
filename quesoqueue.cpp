@@ -155,7 +155,7 @@ int QuesoQueue::Position(std::string username) {
     if (Current()->submitter == username) {
         return 0;
     }
-    if (_levels.empty() || std::get<0>(List()).empty() ) {
+    if (_levels.empty()) {
         return -1;
     }
 
