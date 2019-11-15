@@ -234,6 +234,17 @@ void Chat::HandleMessage(std::stringstream message, std::string sender) {
                                      + l->submitter));
         }
         WriteMessage(NextLevelMessage(l));
+    } else if (command == "dip" && sender == Auth::channel) {
+        std::string username;
+        message >> username;
+        _timer.Reset();
+        std::optional<Level> l = _qq.Dip(username);
+        if (l) {
+            WriteMessage("Here comes the perfect level!");
+            WriteMessage(NextLevelMessage(l));
+        } else {
+            WriteMessage("Dang, I couldn't find a level by " + username + "!");
+        }
     } else if (command == "current") {
         WriteMessage(CurrentLevelMessage(_qq.Current()));
     } else if (command == "list") {

@@ -217,6 +217,26 @@ std::optional<Level> QuesoQueue::Next() {
     return _current;
 }
 
+std::optional<Level> QuesoQueue::Dip(std::string username) {
+    // Find the earliest submitted level from that username.
+    // Use iterators so we can delete it.
+    for (auto lit = _levels.begin(); lit != _levels.end(); lit++) {
+        // Found it!
+        if (lit->submitter == username) {
+            // Set _current. (This pops the old current.)
+            _current = *lit;
+            // Remove this one from the list.
+            _levels.erase(lit);
+            // We modified the queue, so save.
+            SaveState();
+            // Return the new current.
+            return Current();
+        }
+    }
+    // Didn't find it. :(
+    return std::nullopt;
+}
+
 std::optional<Level> QuesoQueue::Current() {
     //// This is the case when we haven't started yet?
     //if (!_current && !_levels.empty()) {
