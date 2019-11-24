@@ -135,8 +135,10 @@ std::string Chat::LevelListMessage(std::optional<Level> current, PriorityQueso l
     ss << online.size() + (current ? 1 : 0)
        << " online level(s) in the queue: ";
 
+    std::string starter = current ? std::string(current->submitter + " (current)") : "";
+
     ss << std::accumulate(online.begin(), online.end(),
-            std::string(current->submitter + " (current)"),
+            starter,
             [](std::string acc, Level x){
                 return acc + ", " + x.submitter;
             });
@@ -151,7 +153,7 @@ std::string Chat::NextLevelMessage(std::optional<Level> l) {
     }
 
     std::stringstream ss;
-    ss << "Next up in queue is " << l->levelCode << ", submitted by "
+    ss << "Next is " << l->levelCode << ", submitted by "
        << l->submitter;
     return ss.str();
 }
@@ -177,7 +179,7 @@ std::string Chat::PositionMessage(int position) {
         msg << "Your level is being played right now!";
         break;
     default:
-        msg << "You are currently in position " << position+1;
+        msg << "You are currently in position " << position;
         break;
     }
     return msg.str();

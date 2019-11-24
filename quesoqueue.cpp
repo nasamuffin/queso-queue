@@ -58,19 +58,15 @@ std::string QuesoQueue::Add(Level level) {
     if (result == _levels.end() || level.submitter == Auth::channel) {
         auto online_levels = std::get<0>(List()).size();
         // push to the end of the queue
-        if (_levels.empty() && !Current().has_value()) {
-            _current = std::make_optional(level);
-        } else {
-            _levels.push_back(level);
-            online_levels++;
-        }
+        _levels.push_back(level);
+        online_levels++;
         std::stringstream ss;
         // Since they JUST added it, we can pretty safely assume they're online.
         ss << level.submitter;
         ss << ", ";
         ss << level.levelCode;
         ss << " has been added to the queue. Currently in position #";
-        ss << online_levels + 1;
+        ss << online_levels + (_current ? 1 : 0);
         ss << ".";
         SaveState();
         return ss.str();
@@ -169,7 +165,7 @@ int QuesoQueue::Position(std::string username) {
     for (Level l : both) {
         position++;
         if (l.submitter == username) {
-            return position;
+            return position + (_current ? 1 : 0);
         }
     }
     // not in queue
