@@ -238,6 +238,14 @@ void Chat::HandleMessage(std::stringstream message, std::string sender) {
         WriteMessage(NextLevelMessage(l));
     } else if (command == "current") {
         WriteMessage(CurrentLevelMessage(_qq.Current()));
+    } else if (command == "random" && sender == Auth::channel) {
+        _timer.Reset();
+        std::optional<Level> l = _qq.Random();
+        if (l) {
+            WriteMessage(std::string("/marker " + l->levelCode + ", submitted by "
+                                     + l->submitter));
+        }
+        WriteMessage(NextLevelMessage(l));
     } else if (command == "list") {
         WriteMessage(LevelListMessage(_qq.Current(), _qq.List()));
     } else if (command == "position") {

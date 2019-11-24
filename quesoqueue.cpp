@@ -222,6 +222,42 @@ std::optional<Level> QuesoQueue::Current() {
     return _current;
 }
 
+std::optional<Level> QuesoQueue::Random() {
+    auto list = List();
+    std::deque<Level> levels(std::get<0>(list)); // Use online levels first.
+
+    if (levels.empty()) {
+        levels = std::get<1>(list); // See if there are offline levels.
+        if (levels.empty()) {
+            _current = std::nullopt;
+            return _current;
+        }
+    }
+    std::vector<Level> new_current = {};
+    std::sample(levels.begin(), levels.end(), std::back_inserter(new_current),
+                1, std::mt19937{std::random_device{}()});
+
+    if (new_current.empty()) {
+        _current = std::nullopt;
+    } else {
+        _current = std::make_optional(new_current[0]);
+    }
+
+    // Remove current (it's in a special current place now)
+    _levels.erase(
+        std::find_if(
+            _levels.begin(),
+            _levels.end(),
+            [&](auto l){
+                return l.submitter == _current->submitter &&
+                       l.levelCode == _current->levelCode;
+            }
+        )
+    );
+    SaveState();
+    return _current;
+}
+
 PriorityQueso QuesoQueue::List() {
     std::deque<Level> online, offline;
     std::set<std::string> online_users = _twitch.getOnlineUsers(Auth::channel);

@@ -47,6 +47,11 @@ class QuesoQueue {
     std::optional<Level> Punt();
 
     /**
+     * Selects a random level from the queue and returns the new top (subject to priority queue split)
+     */
+     std::optional<Level> Random();
+
+    /**
      * Split the stored level queue into online and offline for printing
      */
     PriorityQueso List();
