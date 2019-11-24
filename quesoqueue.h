@@ -65,5 +65,5 @@ class QuesoQueue {
     std::deque<Level> _levels;
     std::optional<Level> _current;
     Twitch _twitch;  // query online state
-    const size_t maxSize = 15;
+    const size_t maxSize = 30;
 };

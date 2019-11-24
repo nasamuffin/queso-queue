@@ -1,7 +1,11 @@
 #include "twitch.h"
 
+#include <chrono>
+#include <ctime>
 #include <curl/curl.h>
 #include <iostream>
+#include <iomanip>
+#include <map>
 #include <string>
 #include "SimpleJSON/JSON.h"
 
@@ -67,7 +71,23 @@ std::set<std::string> Twitch::getOnlineUsers(const std::string& channel) {
         }
     }
 
+    auto current_time = std::chrono::system_clock::now();
+    auto user_snapshot = _recent_chatters;
+    _recent_chatters = {};
+    for(auto const& [user, last_heard_from] : user_snapshot) {
+        //TODO: This time should be runtime configurable.
+        if (current_time - last_heard_from < std::chrono::minutes(5)) {
+            online_users.emplace(user);
+            _recent_chatters.emplace(user, last_heard_from);
+        }
+    }
+
     return online_users;
+}
+
+void Twitch::markAsOnline(std::string username) {
+    auto current = std::chrono::system_clock::now();
+    _recent_chatters.emplace(username, current);
 }
 
 void placeStreamMarker() {

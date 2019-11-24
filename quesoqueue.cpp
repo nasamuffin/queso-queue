@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <iostream>
 #include <fstream>
+#include <random>
 #include <regex>
 #include <sstream>
 #include <tuple>

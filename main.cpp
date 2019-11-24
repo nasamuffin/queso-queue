@@ -8,7 +8,7 @@ int main(int, char **) {
     QuesoQueue qq(t);
     qq.LoadLastState();
     Timer ti;
-    Chat c(qq, ti);
+    Chat c(qq, t, ti);
     c.Connect();
     c.Listen();
 }

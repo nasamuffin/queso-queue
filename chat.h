@@ -14,7 +14,7 @@
 
 class Chat {
   public:
-    Chat(const QuesoQueue &qq, const Timer &timer);
+    Chat(const QuesoQueue &qq, const Twitch &twitch, const Timer &timer);
     void HandleMessage(std::stringstream message, std::string sender);
     void WriteMessage(std::string message);
     void Write(std::string command);
@@ -30,6 +30,7 @@ class Chat {
 
     bool _canAddToQueue = true;
     QuesoQueue _qq;
+    Twitch _twitch;
     Timer _timer;
     std::string _priorityText;
 

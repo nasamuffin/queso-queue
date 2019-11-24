@@ -14,7 +14,7 @@
 #include <netdb.h>
 #include <experimental/filesystem>
 
-Chat::Chat(const QuesoQueue &qq, const Timer &timer) : _qq(qq), _timer(timer) {
+Chat::Chat(const QuesoQueue &qq, const Twitch &twitch, const Timer &timer) : _qq(qq), _twitch(twitch), _timer(timer) {
     namespace fs = std::experimental::filesystem;
     static const std::regex chipModuleRegex(".*\\.so", std::regex_constants::egrep);
 
@@ -109,6 +109,7 @@ void Chat::Listen() {
             // Get message body
             std::string messageBody = m[2];
 
+            _twitch.markAsOnline(username);
             HandleMessage(std::stringstream(messageBody), username);
             continue;
         }
