@@ -3,6 +3,7 @@
 // Maybe redundant to Twitch API.
 #include "level.h"
 #include "quesoqueue.h"
+#include "obs_text_source.h"
 #include "timer.h"
 
 #include <string>
@@ -14,7 +15,7 @@
 
 class Chat {
   public:
-    Chat(const QuesoQueue &qq, const Timer &timer);
+    Chat(const QuesoQueue &qq, const Timer &timer, const ObsTextSource &textSource);
     void HandleMessage(std::stringstream message, std::string sender);
     void WriteMessage(std::string message);
     void Write(std::string command);
@@ -31,6 +32,7 @@ class Chat {
     bool _canAddToQueue = false;
     QuesoQueue _qq;
     Timer _timer;
+    ObsTextSource _textSource;
     std::string _priorityText;
 
     std::string _server = "irc.chat.twitch.tv";

@@ -41,6 +41,7 @@ set(SOURCES
     quesoqueue.cpp
     chat.cpp
     chips.cpp
+    obs_text_source.cpp
 )
 
 add_executable(

@@ -14,7 +14,8 @@
 #include <netdb.h>
 #include <experimental/filesystem>
 
-Chat::Chat(const QuesoQueue &qq, const Timer &timer) : _qq(qq), _timer(timer) {
+Chat::Chat(const QuesoQueue &qq, const Timer &timer, const ObsTextSource &textSource)
+                                    : _qq(qq), _timer(timer), _textSource(textSource) {
     namespace fs = std::experimental::filesystem;
     static const std::regex chipModuleRegex(".*\\.so", std::regex_constants::egrep);
 
@@ -85,6 +86,13 @@ void Chat::Listen() {
             WriteMessage("@" + std::string(Auth::channel) + " the timer has "
                          "expired for this level! Let's roll for retries.");
             WriteMessage("!roll d10");
+
+            // To get the magical 0:00.
+            _textSource.UpdateTime(_timer.Remaining());
+        }
+
+        if (_timer.IsRunning()) {
+            _textSource.UpdateTime(_timer.Remaining());
         }
 
         if (ret == 0) {
