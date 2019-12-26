@@ -24,6 +24,10 @@ std::chrono::seconds Timer::Remaining() {
     return _timeRemaining;
 }
 
+bool Timer::IsRunning() {
+    return _running;
+}
+
 bool Timer::CheckTimer() {
     if (!_running) {
         return false;

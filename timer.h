@@ -9,6 +9,7 @@ class Timer {
     void Pause();
     void Reset();
     std::chrono::seconds Remaining();
+    bool IsRunning();
 
     bool CheckTimer();
   private:
