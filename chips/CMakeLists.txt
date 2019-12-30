@@ -1,10 +1,20 @@
-project(count CXX)
+option(AUTO_ENABLE_CHIPS "Automatically build all chips found in project" OFF)
 
-set(SOURCES
-    count.cpp
-)
+set(ENABLED_CHIPS "" CACHE STRING "Enable each listed chip rather than auto-detect")
+set(found_chips "")
 
-add_library(${PROJECT_NAME} SHARED ${SOURCES})
-spdlog_enable_warnings(${PROJECT_NAME})
-target_link_libraries(${PROJECT_NAME} PRIVATE spdlog::spdlog)
-target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
+if(${AUTO_ENABLE_CHIPS})
+    file(GLOB_RECURSE found_chips "*chip.cmake")
+else()
+    foreach(_chip ${ENABLED_CHIPS})
+        if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${_chip}/chip.cmake")
+            list(APPEND found_chips "${CMAKE_CURRENT_SOURCE_DIR}/${_chip}/chip.cmake")
+        endif()
+    endforeach(_chip)
+endif()
+
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+foreach(_chip ${found_chips})
+    message("Chip enabled: ${_chip}")
+    include(${_chip})
+endforeach(_chip)

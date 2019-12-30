@@ -9,7 +9,6 @@ project(queso CXX)
 
 add_subdirectory(3rdparty)
 add_subdirectory(chips)
-
 add_subdirectory(tests)
 
 ### Use build/out for install directory
